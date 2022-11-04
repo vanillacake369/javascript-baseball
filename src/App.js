@@ -1,26 +1,34 @@
-// readline 객체 : get keyboard input
-const readline = require("readline");
-const rl = readline.createInterface({
-  input:process.stdin,
-  output:process.stdout,
-  terminal: false
-});
-rl.on('line',(line)=>{
-  console.log(line);
-});
-rl.once('close',()=>{
-  // end of input
-});
+const MissionUtils = require("@woowacourse/mission-utils");
+const computer = [];
+const player = [];
+// console.log(MissionUtils.Random.pickNumberInList([1, 2, 3]));
 
 class App {
   play() {
-    console.log("숫자 야구 게임을 시작합니다.");
+    generateAnswer();
+    computer.forEach(element=>{
+      MissionUtils.Console.print(element + '<br>');
+    })
+    // MissionUtils.Console.print('안녕하세요.');
+    // MissionUtils.Console.print(MissionUtils.Random.pickNumberInList([1, 9]));
   }
 }
 
-while(computer.length < 3){
-
+const generateAnswer = () => {
+  while(computer.length < 3){
+    getRandomNumberForComputer();
+  }
 }
 
+const getRandomNumberForComputer = () => {
+  const number = MissionUtils.Random.pickNumberInRange(1, 9);
+  pushRandomNumberToComputerList(number);
+}
+
+const pushRandomNumberToComputerList = (number) => {
+  if(!computer.includes(number)){
+    computer.push(number);
+  }
+}
 
 module.exports = App;
