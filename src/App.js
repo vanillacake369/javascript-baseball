@@ -1,6 +1,5 @@
-// 외부 라이브러리 import
+//  import MissionUtils
 const MissionUtils = require("@woowacourse/mission-utils");
-const Console = require("console");
 
 // 컴퓨터, 플레이어 객체
 let computer = [];
@@ -16,11 +15,12 @@ class App {
     // 컴퓨터의 정답 생성
     generateAnswer();
 
-    // 사용자 정답 입력 전까지 게임 진행
+    // 게임 시작
+    MissionUtils.Console.print('숫자 야구 게임을 시작합니다.');
+    // 정답 전까지 게임 진행
     while(true){
-      // 플레이어 플러쉬
+      // 플레이어 초기화 & 입력
       clearPlayer(player);
-      // 플레이어 입력
       getUserInput();
 
       // 볼,스트라이크,낫싱 판별
@@ -39,26 +39,19 @@ class App {
       }
       
       // 판별에 대한 출력
-      // 낫싱 처리
-      if(nothingCount > 0) {
+      if(nothingCount > 0) { // 낫싱 처리
         MissionUtils.Console.print('낫싱');
       }else{
-        // 스트라이크 처리
-        if(ballCount == 0) {
+        if(ballCount === 0) { // 스트라이크 처리
           MissionUtils.Console.print(`${strikeCount}스트라이크`);
           if(strikeCount === 3) {
             MissionUtils.Console.print('3개의 숫자를 모두 맞히셨습니다! 게임 종료\n');
             break;
           }
-        }
-        // 볼 처리
-        else{
-          // 볼만 있는 경우
-          if(strikeCount == 0){
+        } else{ // 볼 처리
+          if(strikeCount === 0){ // 볼만 있는 경우
             MissionUtils.Console.print(`${ballCount}볼`);
-          }
-          // 볼, 스트라이크인 경우
-          else {
+          } else {              // 볼, 스트라이크인 경우
             MissionUtils.Console.print(`${ballCount}볼 ${strikeCount}스트라이크`);
           }
         }
@@ -128,24 +121,30 @@ const clearPlayer = (player) => {
 
 // get user's input
 const getUserInput = () => {
-  // MissionUtils.Console.print('숫자 야구 게임을 시작합니다.');
   MissionUtils.Console.readLine('숫자를 입력해주세요 : ', (userGuessingNumber) => {
     try{
-      // 비정상적 입력 처리
-      if(userGuessingNumber.length>3){
-        throw new Error("숫자는 3자리만 입력해주십시오.");
-      }
-      // 정상 입력 처리
-      else{
-        for (let i=0;i<userGuessingNumber.length;i++){
-          player.push(Number(userGuessingNumber.charAt(i)));
-        }
-      }
+      handleInvalidInput(userGuessingNumber);
     }catch (e) {
       alert(e.message);
     }
   });
 }
+
+// handle invalid answer input by user
+const handleInvalidInput = (userGuessingNumber) =>{
+  if(userGuessingNumber.length>3){
+    throw new Error("숫자는 3자리만 입력해주십시오.");
+  }
+  pushGuessingNumber(userGuessingNumber)
+}
+
+// push user's input number to player obj
+const pushGuessingNumber = (userGuessingNumber) => {
+  for (let i=0;i<userGuessingNumber.length;i++){
+    player.push(Number(userGuessingNumber.charAt(i)));
+  }
+}
+
 // generate answer using random num
 const generateAnswer = () => {
   while(computer.length < 3){
